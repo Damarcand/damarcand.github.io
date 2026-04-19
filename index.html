@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>damarcand — indie app developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E8871A;
+      --orange-dim: #a05e10;
+      --orange-glow: rgba(232, 135, 26, 0.12);
+      --bg: #0e0e0e;
+      --bg-card: #161616;
+      --bg-card-hover: #1c1c1c;
+      --border: rgba(255,255,255,0.07);
+      --border-accent: rgba(232, 135, 26, 0.3);
+      --text: #e8e4dc;
+      --text-muted: #6b6860;
+      --text-dim: #9a9690;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(14,14,14,0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      color: var(--orange);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-brand span { color: var(--text-muted); }
+
+    nav a {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--orange); }
+
+    .nav-links { display: flex; gap: 2rem; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2.5rem 5rem;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--orange);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-tag::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--orange);
+    }
+
+    h1 {
+      font-family: var(--mono);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    h1 .accent { color: var(--orange); }
+
+    .hero-sub {
+      font-family: var(--mono);
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    /* grid decoration */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 60% at 80% 50%, black 20%, transparent 80%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .corner-tag {
+      position: absolute;
+      bottom: 3rem;
+      right: 0;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    /* ── SECTION ── */
+    section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--orange);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── APP CARD ── */
+    .app-card {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: background 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--orange);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .app-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+    }
+    .app-card:hover::before { opacity: 1; }
+
+    .app-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: var(--orange-glow);
+      border: 1px solid var(--border-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .app-icon svg { width: 40px; height: 40px; }
+
+    .app-info h2 {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+
+    .app-info p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .app-meta {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .tag.orange {
+      border-color: var(--border-accent);
+      color: var(--orange);
+    }
+
+    /* ── PRIVACY ── */
+    .privacy-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2.5rem;
+    }
+
+    .privacy-block h2 {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .privacy-block h3 {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .privacy-block p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    .privacy-block p + p { margin-top: 0.75rem; }
+
+    .privacy-updated {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--orange); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 2.5rem;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.25rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      section { padding: 4rem 1.5rem; }
+      .app-card { grid-template-columns: 1fr; }
+      .app-icon { width: 64px; height: 64px; }
+      footer { flex-direction: column; gap: 0.75rem; text-align: center; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="#"><span>//</span> damarcand</a>
+    <div class="nav-links">
+      <a href="#apps">Apps</a>
+      <a href="#privacy">Privacy</a>
+      <a href="https://github.com/damarcand" target="_blank">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <p class="hero-tag">indie developer</p>
+    <h1>damar<span class="accent">cand</span></h1>
+    <p class="hero-sub">// building tools for things I care about</p>
+    <p class="hero-desc">Small, focused apps made with care. No ads, no tracking, no nonsense — just software that does exactly what it says.</p>
+    <p class="corner-tag">// SE · Android · React Native</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- APPS -->
+  <section id="apps">
+    <p class="section-label">// apps</p>
+
+    <a class="app-card" href="#" target="_blank">
+      <div class="app-icon">
+        <!-- Factory/gear icon representing Satisfactory Ops -->
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="24" width="8" height="12" rx="1" fill="#E8871A" opacity="0.9"/>
+          <rect x="16" y="18" width="8" height="18" rx="1" fill="#E8871A" opacity="0.9"/>
+          <rect x="28" y="12" width="8" height="24" rx="1" fill="#E8871A" opacity="0.9"/>
+          <polyline points="4,22 12,16 20,16 28,10 36,10" stroke="#E8871A" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+          <circle cx="8" cy="22" r="2" fill="#E8871A"/>
+          <circle cx="20" cy="16" r="2" fill="#E8871A"/>
+          <circle cx="32" cy="10" r="2" fill="#E8871A"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Satisfactory Ops</h2>
+        <p>A production tracking tool for the factory-building game Satisfactory. Plan inputs, manage sections, track machine outputs and summary balances — all on your phone.</p>
+        <div class="app-meta">
+          <span class="tag orange">v1.1.0</span>
+          <span class="tag">Android</span>
+          <span class="tag">React Native</span>
+          <span class="tag">Game tool</span>
+        </div>
+      </div>
+    </a>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PRIVACY -->
+  <section id="privacy">
+    <p class="section-label">// privacy policy</p>
+
+    <div class="privacy-block">
+      <p class="privacy-updated">Last updated: April 19, 2026</p>
+      <h2>Privacy Policy — damarcand apps</h2>
+
+      <p>This policy applies to all apps published by damarcand on Google Play.</p>
+
+      <h3>// data collection</h3>
+      <p>damarcand apps do not collect, store, or transmit any personal data. All data you enter in our apps — profiles, settings, or any other content — is stored exclusively on your own device and never sent anywhere.</p>
+
+      <h3>// third-party services</h3>
+      <p>Our apps do not use third-party analytics, advertising networks, or tracking services of any kind.</p>
+
+      <h3>// permissions</h3>
+      <p>Any permissions requested by our apps are used solely to provide app functionality and never for data collection purposes.</p>
+
+      <h3>// changes</h3>
+      <p>If this policy is ever updated, the new version will be published at this page. We don't anticipate significant changes, given our commitment to not collecting data in the first place.</p>
+
+      <h3>// contact</h3>
+      <p>Questions? Reach out via <a href="https://github.com/damarcand" style="color: var(--orange); text-decoration: none;">github.com/damarcand</a>.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <footer>
+    <p>// damarcand · Sweden</p>
+    <p><a href="https://github.com/damarcand" target="_blank">github.com/damarcand</a></p>
+  </footer>
+
+</body>
+</html>
